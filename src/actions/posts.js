@@ -27,3 +27,10 @@ export const deletePost = (id) => async (dispatch) => {
         .then(() => dispatch({ type: "DELETE", payload: id }))
         .catch((err) => console.log(err.message));
 };
+
+export const likePost = (id) => async (dispatch) => {
+    await api
+        .likePost(id)
+        .then(({ data }) => dispatch({ type: "LIKE", payload: data }))
+        .catch((err) => console.log(err.message));
+};
