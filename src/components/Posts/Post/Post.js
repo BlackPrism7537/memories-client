@@ -50,8 +50,9 @@ const Post = ({ post, setcurrentId }) => {
                     {post.title}
                 </Typography>
                 <Typography
-                    className={classes.title}
                     variant="body2"
+                    color="textSecondary"
+                    component="p"
                     gutterBottom
                 >
                     {post.message}

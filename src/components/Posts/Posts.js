@@ -3,14 +3,14 @@ import Post from "./Post/Post";
 import { useSelector } from "react-redux";
 
 import useStyles from "./styles";
-import { CircularProgress, Grid, Typography } from "@material-ui/core";
+import { LinearProgress, Grid } from "@material-ui/core";
 
 const Posts = ({ setcurrentId }) => {
     const classes = useStyles();
     const posts = useSelector((state) => state.posts);
 
     return !posts.length ? (
-        <CircularProgress />
+        <LinearProgress />
     ) : (
         <Grid
             container
