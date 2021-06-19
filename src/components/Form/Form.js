@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Typography, Paper } from "@material-ui/core";
 import FileBase from "react-file-base64";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useStyles from "./styles";
-import { createPost } from "../../actions/posts";
+import { createPost, updatePost } from "../../actions/posts";
 
-const Form = () => {
+const Form = ({ currentId, setcurrentId }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const [postData, setPostData] = useState({
@@ -15,17 +15,38 @@ const Form = () => {
         tags: "",
         selectedFile: "",
     });
+    const post = useSelector(({ posts }) =>
+        currentId ? posts.find((p) => p._id === currentId) : null
+    );
+
+    useEffect(() => {
+        post && setPostData(post);
+    }, [post]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(createPost(postData));
+
+        currentId
+            ? dispatch(updatePost(currentId, postData))
+            : dispatch(createPost(postData));
+
+        clear();
     };
 
     const handleChange = ({ target }) => {
         setPostData({ ...postData, [target.name]: target.value });
     };
 
-    const clear = () => {};
+    const clear = () => {
+        setcurrentId(null);
+        setPostData({
+            creator: "",
+            title: "",
+            message: "",
+            tags: "",
+            selectedFile: "",
+        });
+    };
 
     return (
         <Paper className={classes.paper}>
@@ -35,7 +56,9 @@ const Form = () => {
                 className={`${classes.form} ${classes.root}`}
                 onSubmit={handleSubmit}
             >
-                <Typography variant="h6">Create Memory</Typography>
+                <Typography variant="h6">
+                    {currentId ? "Update" : "Create"} Memory
+                </Typography>
                 <TextField
                     name="creator"
                     label="Creator"

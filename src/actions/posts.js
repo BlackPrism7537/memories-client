@@ -13,3 +13,10 @@ export const createPost = (post) => async (dispatch) => {
         .then(({ data }) => dispatch({ type: "CREATE", payload: data }))
         .catch((err) => console.log(err.message));
 };
+
+export const updatePost = (id, post) => async (dispatch) => {
+    await api
+        .updatePost(id, post)
+        .then(({ data }) => dispatch({ type: "UPDATE", payload: data }))
+        .catch((err) => console.log(err.message));
+};
