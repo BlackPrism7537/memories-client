@@ -17,28 +17,32 @@ import { deletePost, likePost } from "../../../actions/posts";
 const Post = ({ post, setcurrentId }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const user = JSON.parse(localStorage.getItem("profile"));
 
     return (
         <Card className={classes.card}>
             <CardMedia
                 className={classes.media}
-                image={post.selectedFile}
+                image={post?.selectedFile}
                 title={post.title}
             />
             <div className={classes.overlay}>
-                <Typography variant="h6">{post.creator}</Typography>
+                <Typography variant="h6">{post.name}</Typography>
                 <Typography variant="body2">
                     {moment(post.createdAt).fromNow()}
                 </Typography>
             </div>
             <div className={classes.overlay2}>
-                <Button
-                    style={{ color: "white" }}
-                    size="small"
-                    onClick={() => setcurrentId(post._id)}
-                >
-                    <MoreHoriz fontSize="default" />
-                </Button>
+                {(post.creator === user?.result?._id ||
+                    post.creator === user?.result?.googleId) && (
+                    <Button
+                        style={{ color: "white" }}
+                        size="small"
+                        onClick={() => setcurrentId(post._id)}
+                    >
+                        <MoreHoriz fontSize="default" />
+                    </Button>
+                )}
             </div>
             <div className={classes.details}>
                 <Typography variant="body2" color="textSecondary">
@@ -63,18 +67,22 @@ const Post = ({ post, setcurrentId }) => {
                     size="small"
                     color="primary"
                     onClick={() => dispatch(likePost(post._id))}
+                    disabled={!user?.result?.name}
                 >
                     <ThumbUpAlt fontSize="small" />
-                    {post.likeCount}
+                    {post?.likes.length}
                 </Button>
-                <Button
-                    size="small"
-                    color="primary"
-                    onClick={() => dispatch(deletePost(post._id))}
-                >
-                    <Delete fontSize="small" />
-                    Delete
-                </Button>
+                {(post.creator === user?.result?._id ||
+                    post.creator === user?.result?.googleId) && (
+                    <Button
+                        size="small"
+                        color="primary"
+                        onClick={() => dispatch(deletePost(post._id))}
+                    >
+                        <Delete fontSize="small" />
+                        Delete
+                    </Button>
+                )}
             </CardActions>
         </Card>
     );

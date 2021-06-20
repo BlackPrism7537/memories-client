@@ -1,13 +1,24 @@
 import axios from "axios";
 
-const url = "https://project-memory-zach-api.herokuapp.com/posts";
+const API = axios.create({
+    baseURL: "https://project-memory-zach-api.herokuapp.com",
+});
 
-export const createPost = (newPost) => axios.post(url, newPost);
+API.interceptors.request.use((req) => {
+    if (localStorage.getItem("profile")) {
+        req.headers.authorization = `Bearer ${
+            JSON.parse(localStorage.getItem("profile")).token
+        }`;
+    }
 
-export const fetchPosts = () => axios.get(url);
+    return req;
+});
 
-export const updatePost = (id, post) => axios.patch(`${url}/${id}`, post);
+export const createPost = (newPost) => API.post("/posts", newPost);
+export const fetchPosts = () => API.get("/posts");
+export const updatePost = (id, post) => API.patch(`${"/posts"}/${id}`, post);
+export const deletePost = (id) => API.delete(`${"/posts"}/${id}`);
+export const likePost = (id) => API.patch(`${"/posts"}/${id}/likePost`);
 
-export const deletePost = (id) => axios.delete(`${url}/${id}`);
-
-export const likePost = (id) => axios.patch(`${url}/${id}/likePost`);
+export const signIn = (authData) => API.post("/users/signin", authData);
+export const signUp = (authData) => API.post("/users/signup", authData);

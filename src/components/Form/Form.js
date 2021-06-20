@@ -8,8 +8,8 @@ import { createPost, updatePost } from "../../actions/posts";
 const Form = ({ currentId, setcurrentId }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const user = JSON.parse(localStorage.getItem("profile"));
     const [postData, setPostData] = useState({
-        creator: "",
         title: "",
         message: "",
         tags: "",
@@ -27,8 +27,13 @@ const Form = ({ currentId, setcurrentId }) => {
         e.preventDefault();
 
         currentId
-            ? dispatch(updatePost(currentId, postData))
-            : dispatch(createPost(postData));
+            ? dispatch(
+                  updatePost(currentId, {
+                      ...postData,
+                      name: user?.result?.name,
+                  })
+              )
+            : dispatch(createPost({ ...postData, name: user?.result?.name }));
 
         clear();
     };
@@ -40,13 +45,22 @@ const Form = ({ currentId, setcurrentId }) => {
     const clear = () => {
         setcurrentId(null);
         setPostData({
-            creator: "",
             title: "",
             message: "",
             tags: "",
             selectedFile: "",
         });
     };
+
+    if (!user?.result?.name) {
+        return (
+            <Paper className={classes.paper}>
+                <Typography variant="h6" align="center">
+                    Sign In to Create New Memories and like posts.
+                </Typography>
+            </Paper>
+        );
+    }
 
     return (
         <Paper className={classes.paper}>
@@ -59,14 +73,6 @@ const Form = ({ currentId, setcurrentId }) => {
                 <Typography variant="h6">
                     {currentId ? "Update" : "Create"} Memory
                 </Typography>
-                <TextField
-                    name="creator"
-                    label="Creator"
-                    variant="outlined"
-                    fullWidth
-                    value={postData.creator}
-                    onChange={handleChange}
-                />
                 <TextField
                     name="title"
                     label="Title"

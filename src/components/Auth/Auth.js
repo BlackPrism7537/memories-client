@@ -12,6 +12,7 @@ import useStyles from "./styles";
 import { LockOutlined } from "@material-ui/icons";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { signIn, signUp } from "../../actions/auth";
 
 import Icon from "./Icon";
 import Input from "./Input";
@@ -36,12 +37,9 @@ const Auth = () => {
         e.preventDefault();
         isSignup
             ? authData.password === authData.confirmPassword
-                ? console.log(authData)
+                ? dispatch(signUp(authData, history))
                 : console.log("error")
-            : console.log({
-                  email: authData.email,
-                  password: authData.password,
-              });
+            : dispatch(signIn(authData, history));
     };
 
     const handleChange = ({ target }) => {
