@@ -27,7 +27,8 @@ const NavBar = () => {
 
         token && decode(token).exp * 1000 < new Date().getTime() && logout();
         setUser(JSON.parse(localStorage.getItem("profile")));
-    }, [location, logout, user.token]);
+        // eslint-disable-next-line
+    }, [location]);
 
     return (
         <AppBar className={classes.appBar} position="static" color="inherit">
